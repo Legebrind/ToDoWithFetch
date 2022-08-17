@@ -1,5 +1,5 @@
 import React from "react";
-
+import List from "./list.jsx";
 
 
 
@@ -7,7 +7,7 @@ import React from "react";
 const Home = () => {
 	return (
 		<div className="container-fluid bg-secondary.bg-gradient w-25">
-
+			<List/>
 		</div>
 	);
 };
