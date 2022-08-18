@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const List = () => {
   const [inputValue, setInputValue] = useState("");
   const [items, setItems] = useState([]);
-
+  
+  let pendingTasks = 0;
   function addItem() {
     if (!inputValue) {
       alert("Item can't be empty");
@@ -12,9 +13,10 @@ const List = () => {
     setItems((prevList) => [...prevList, inputValue]);
     setInputValue("");
   }
-  function handleRemove(e) {
-    const lista = document.querySelector("#list");
-    lista.removeChild(e.target);
+  function handleRemove(e) {      
+
+    setItems(items.filter(data =>data != e.target.parentNode.parentNode.firstChild.innerHTML));  
+    
   }
   return (
     <div className="d-inline-flex flex-column w-100 container justify-content-center align-items-center shadows">
@@ -48,9 +50,11 @@ const List = () => {
                 className="list-group-item text-center"
                 id={i}
                 key={i}
-                onClick={handleRemove}
+                onClick={(e)=>{
+                  handleRemove(e)
+                }}
               >
-               <span className="hide"><i className="fa fa-trash"/></span>{item}
+               <span>{item}</span><span className="hide"><i className="fa fa-trash"/></span>
               </li>
             );
           })
