@@ -4,7 +4,7 @@ const List = () => {
   const [inputValue, setInputValue] = useState("");
   const [items, setItems] = useState([]);
   
-  let pendingTasks = 0;
+  
   function addItem() {
     if (!inputValue) {
       alert("Item can't be empty");
