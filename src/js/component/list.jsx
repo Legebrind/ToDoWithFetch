@@ -4,20 +4,59 @@ const List = () => {
   const [inputValue, setInputValue] = useState("");
   const [items, setItems] = useState([]);
   
+  useEffect(()=>{
+    if(items.length > 0){
+      fetch('https://assets.breatheco.de/apis/fake/todos/user/alesanchezr', {
+      method: "PUT",
+      body: JSON.stringify(items),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(resp => {
+        console.log(resp.ok); // will be true if the response is successfull
+        console.log(resp.status); // the status code = 200 or code = 400 etc.
+        console.log(resp.text()); // will try return the exact result as string
+        return resp/* .json(); esto se queda comentado al tirar fallo */ // (returns promise) will try to parse the result as json as return a promise that you can .then for results
+    })
+    .then(data => {
+        //here is were your code should start after the fetch finishes
+        console.log(data); //this will print on the console the exact object received from the server
+    })
+    .catch(error => {
+        //error handling
+        console.log(error);
+    });}
+    
+
+  },[items])
+  
+  /* fetch('https://assets.breatheco.de/apis/fake/todos/user/alesanchezr', {
+    method: 'post',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      items
+    })
+   }); */
   
   function addItem() {
     if (!inputValue) {
       alert("Item can't be empty");
       return;
     }
-    setItems((prevList) => [...prevList, inputValue]);
+    let aux = {label : inputValue, done : false }
+    setItems((prevList) => [...prevList, aux]);
     setInputValue("");
   }
-  function handleRemove(e) {      
-
-    setItems(items.filter(data =>data != e.target.parentNode.parentNode.firstChild.innerHTML));  
+  function handleRemove(i) {      
+    let temp = [...items]
+    temp[i].done = !temp[i].done
+    setItems(temp)
+    //setItems(items.filter(data =>data.label != e.label)); Este es el borrado antiguo
     
   }
+
+  
   return (
     <div className="d-inline-flex flex-column w-100 container justify-content-center align-items-center shadows">
       <div className="row">
@@ -39,25 +78,26 @@ const List = () => {
       </div>
 
       <ul id="list" className="list-group col-12 mt-3">
-        {items.length == 0 ? (
-          <li className="list-group-item text-center">
+        {items.length == 0 ? 
+          (<li className="list-group-item text-center">
             List is empty, add a task
-          </li>
-        ) : (
-          items.map((item, i) => {
-            return (
+          </li>)
+         : 
+          items.map((item, i) => (
+            
               <li
                 className="list-group-item text-center"
                 id={i}
                 key={i}
                 onClick={(e)=>{
-                  handleRemove(e)
+                  handleRemove(i)
                 }}
               >
-               <span>{item}</span><span className="hide"><i className="fa fa-trash"/></span>
+                {console.log(item.done)}
+               <span className={item.done ?"text-decoration-line-through" : null}>{item.label}</span>
               </li>
-            );
-          })
+            
+          )
         )}
         <li className="list-group-item text-center text-black-50">{`${items.length} item left`}</li>
         <div className="fondo1"></div>
